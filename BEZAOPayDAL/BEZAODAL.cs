@@ -67,5 +67,61 @@ namespace BEZAOPayDAL
             return users;
 
        }
-    }
+
+        public string LookUpNameById(int id)
+        {
+            OpenConnection();
+
+            string name;
+
+            // Establish name of stored procedure
+            using (SqlCommand command = new SqlCommand("GetName", _sqlConnection))
+            {
+                
+                command.CommandType = CommandType.StoredProcedure;
+
+                // Input Parameter
+                SqlParameter param = new SqlParameter
+                {
+                    ParameterName = "@Id",
+                    SqlDbType = SqlDbType.Int,
+                    Value = id,
+                    Direction = ParameterDirection.Input
+                };
+
+                command.Parameters.Add(param);
+
+                // Output Parameter
+                param = new SqlParameter
+                {
+                    ParameterName = "@name",
+                    SqlDbType = SqlDbType.Char,
+                    Size = 10,
+                    Direction = ParameterDirection.Output
+                };
+
+                command.Parameters.Add(param);
+
+                // Execute stored procedure
+                command.ExecuteNonQuery();
+
+                // Return output parameter
+                try
+                {
+                    name = (string)command.Parameters["@name"].Value;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("User Not Found!");
+                    throw new CustomException(id.ToString());
+                }
+                finally
+                {
+                    CloseConnection();
+                }
+            }
+            
+            return name;
+        }
+   }
 }

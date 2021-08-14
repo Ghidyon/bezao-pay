@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
 using BEZAOPayDAL;
 
 
@@ -12,14 +13,19 @@ namespace BEZAOPay
     {
         static void Main(string[] args)
         {
-            var db = new BEZAODAL();
+            var connectionString = ConfigurationManager.ConnectionStrings["BEZAOConnect"].ConnectionString;
 
-            var users = db.GetAllUsers();
+            var db = new BEZAODAL(connectionString);
+
+            /*var users = db.GetAllUsers();
 
             foreach (var user in users)
             {
                 Console.WriteLine($"Id: {user.Id}\nName: {user.Name}\nEmail: {user.Email}");
-            }
+            }*/
+
+            
+            Console.WriteLine(db.LookUpNameById(74));
         }
     }
 }
