@@ -113,7 +113,8 @@ namespace BEZAOPayDAL
                 catch (Exception)
                 {
                     Console.WriteLine("User Not Found!");
-                    throw new CustomException(id.ToString());
+                    name = null;
+                    //throw new CustomException(id.ToString());
                 }
                 finally
                 {
@@ -122,6 +123,142 @@ namespace BEZAOPayDAL
             }
             
             return name;
+        }
+
+        public void CreateUser(string name, string email)
+        {
+            OpenConnection();
+
+            // Establish name of stored procedure
+            using (SqlCommand command = new SqlCommand("CreateUser", _sqlConnection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                // Input Parameter
+                SqlParameter param = new SqlParameter
+                {
+                    ParameterName = "@name",
+                    SqlDbType = SqlDbType.Char,
+                    Value = name,
+                    Direction = ParameterDirection.Input
+                };
+
+                command.Parameters.Add(param);
+
+                param = new SqlParameter
+                {
+                    ParameterName = "@email",
+                    SqlDbType = SqlDbType.Char,
+                    Value = email,
+                    Direction = ParameterDirection.Input
+                };
+
+                command.Parameters.Add(param);
+
+                // Execute stored procedure
+                command.ExecuteNonQuery();
+
+            }
+
+            CloseConnection();
+        }
+
+        public int GetUserId(string name)
+        {
+            OpenConnection();
+
+            int id;
+
+            using (SqlCommand command = new SqlCommand("GetUserId", _sqlConnection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                SqlParameter param = new SqlParameter
+                {
+                    ParameterName = "@name",
+                    SqlDbType = SqlDbType.Char,
+                    Value = name,
+                    Direction = ParameterDirection.Input
+                };
+
+                command.Parameters.Add(param);
+                
+                param = new SqlParameter
+                {
+                    ParameterName = "@id",
+                    SqlDbType = SqlDbType.Int,
+                    Size = 10,
+                    Direction = ParameterDirection.Output
+                };
+
+                command.Parameters.Add(param);
+
+                command.ExecuteNonQuery();
+
+                try
+                {
+                    id = (int) command.Parameters["id"].Value;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("UserId Not Found!");
+                    id = default;
+                }
+                finally
+                {
+                    CloseConnection();
+                }
+            }
+
+            return id;
+        }
+
+        public void CreateAccount(int userId, int accountNumber, double balance)
+        {
+            OpenConnection();
+
+            // Establish name of stored procedure
+            using (SqlCommand command = new SqlCommand("CreateAccount", _sqlConnection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                // Input Parameter
+                SqlParameter param = new SqlParameter
+                {
+                    ParameterName = "@userId",
+                    SqlDbType = SqlDbType.Int,
+                    Value = userId,
+                    Direction = ParameterDirection.Input
+                };
+
+                command.Parameters.Add(param);
+
+                param = new SqlParameter
+                {
+                    ParameterName = "@accountNumber",
+                    SqlDbType = SqlDbType.Int,
+                    Value = accountNumber,
+                    Direction = ParameterDirection.Input
+                };
+
+                command.Parameters.Add(param);
+                
+                param = new SqlParameter
+                {
+                    ParameterName = "@balance",
+                    SqlDbType = SqlDbType.Decimal,
+                    Value = balance,
+                    Direction = ParameterDirection.Input
+                };
+
+                command.Parameters.Add(param);
+
+                // Execute stored procedure
+                command.ExecuteNonQuery();
+
+            }
+
+            CloseConnection();
         }
    }
 }

@@ -1,25 +1,28 @@
 ﻿CREATE PROCEDURE CreateUser
 @name char(50),
-@email char(50),
-@userId int,
-@accountNumber int,
-@balance decimal(38,2) output
+@email char(50)
 AS
-INSERT INTO Users (Name, Email) VALUES (@name, @email);
+BEGIN
+	INSERT INTO Users (Name, Email) VALUES (@name, @email);
+END;
 
 Go
 
-CREATE PROCEDURE GetId
+CREATE PROCEDURE GetUserId
 @name char(50),
-@id int output
+@id INT OUTPUT
 AS
-SELECT @id = Id from Users where Name = @name;
+BEGIN
+	SELECT @id = Id FROM Users WHERE Name = @name;
+END;
 
 Go
 
 CREATE PROCEDURE CreateAccount
 @userId int,
 @accountNumber int,
-@balance decimal(38, 2) output
+@balance decimal(38, 2)
 AS
-INSERT INTO Accounts (UserId, Account_Number, Balance) VALUES (@userId, @accountNumber, @decimal);
+BEGIN
+	INSERT INTO Accounts (UserId, Account_Number, Balance) VALUES (@userId, @accountNumber, @balance);
+END;
