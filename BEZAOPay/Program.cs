@@ -27,17 +27,10 @@ namespace BEZAOPay
 
             //Console.WriteLine(db.LookUpNameById(74));
 
-            db.CreateUser("Akunana", "akunana@domain.com");
-
-            int id = db.GetUserId("Akunana");
-
-            if (id != 0)
-                db.CreateAccount(id, 2342143, 344909234.99);
-            else
-            {
-                Console.WriteLine("Invalid Name, Please try again");
-            }
+            //db.CreateUser("Akunana", "akunana@domain.com");
+            db.CreateUserAndPopulateAccount("Buju", "buju@domain.com", 234214334, 3449092.99);
             
+
         }
     }
 }

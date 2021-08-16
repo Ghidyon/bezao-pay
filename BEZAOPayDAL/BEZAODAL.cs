@@ -114,7 +114,7 @@ namespace BEZAOPayDAL
                 {
                     Console.WriteLine("User Not Found!");
                     name = null;
-                    //throw new CustomException(id.ToString());
+                    throw new CustomException(id);
                 }
                 finally
                 {
@@ -157,7 +157,7 @@ namespace BEZAOPayDAL
 
                 // Execute stored procedure
                 command.ExecuteNonQuery();
-
+                Console.WriteLine("User Created!");
             }
 
             CloseConnection();
@@ -197,12 +197,13 @@ namespace BEZAOPayDAL
 
                 try
                 {
-                    id = (int) command.Parameters["id"].Value;
+                    id = (int) command.Parameters["@id"].Value;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Console.WriteLine("UserId Not Found!");
-                    id = default;
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.GetType());
+                    throw new CustomException(name);
                 }
                 finally
                 {
@@ -255,10 +256,17 @@ namespace BEZAOPayDAL
 
                 // Execute stored procedure
                 command.ExecuteNonQuery();
-
+                Console.WriteLine("Account Opened Successfully!");
             }
 
             CloseConnection();
         }
-   }
+
+        public void CreateUserAndPopulateAccount(string name, string email, int accountNumber, double balance)
+        {
+            CreateUser(name, email);
+            int id = GetUserId(name);
+            CreateAccount(id, accountNumber, balance);
+        }
+    }
 }

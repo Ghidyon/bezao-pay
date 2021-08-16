@@ -11,8 +11,14 @@ namespace BEZAOPayDAL
 
         }
 
-        public CustomException(string input)
-            : base($"Invalid Id: {input}")
+        public CustomException(string name)
+            : base($"Invalid {nameof(name)}: {name}")
+        {
+
+        }
+
+        public CustomException(int id)
+            : base($"Invalid {nameof(id)}: {id}")
         {
 
         }
