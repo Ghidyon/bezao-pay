@@ -9,35 +9,35 @@ namespace BEZAOPayDAL
 {
    public class BEZAODAL
    {
-       private readonly string _connectionString;
+        private readonly string _connectionString;
 
-       public BEZAODAL():
-           this(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=BEZAOPay;Integrated Security=True")
-       {
+        public BEZAODAL():
+            this(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=BEZAOPay;Integrated Security=True")
+        {
 
-       }
+        }
        
-       public BEZAODAL(string connectionString )
-       {
-           _connectionString = connectionString;
-       }
+        public BEZAODAL(string connectionString )
+        {
+            _connectionString = connectionString;
+        }
 
 
-       private SqlConnection _sqlConnection = null;
-       private void OpenConnection()
-       {
-           _sqlConnection = new SqlConnection { ConnectionString = _connectionString };
-           _sqlConnection.Open();
-       }
+        private SqlConnection _sqlConnection = null;
+        private void OpenConnection()
+        {
+            _sqlConnection = new SqlConnection { ConnectionString = _connectionString };
+            _sqlConnection.Open();
+        }
 
-       private void CloseConnection()
-       {
-           if (_sqlConnection?.State != ConnectionState.Closed) 
-               _sqlConnection?.Close();
-       }
+        private void CloseConnection()
+        {
+            if (_sqlConnection?.State != ConnectionState.Closed) 
+                _sqlConnection?.Close();
+        }
 
 
-       public IEnumerable<User> GetAllUsers()
+        public IEnumerable<User> GetAllUsers()
        {
             OpenConnection();
 
@@ -112,8 +112,7 @@ namespace BEZAOPayDAL
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("User Not Found!");
-                    name = null;
+                    name = "User not found";
                     throw new CustomException(id);
                 }
                 finally
@@ -203,7 +202,8 @@ namespace BEZAOPayDAL
                 {
                     Console.WriteLine(e.Message);
                     Console.WriteLine(e.GetType());
-                    throw new CustomException(name);
+                    Console.WriteLine(new CustomException(name));
+                    id = default;
                 }
                 finally
                 {
@@ -266,7 +266,11 @@ namespace BEZAOPayDAL
         {
             CreateUser(name, email);
             int id = GetUserId(name);
+            if (id == 0)
+            {
+                return;
+            }
             CreateAccount(id, accountNumber, balance);
         }
-    }
+   }
 }
